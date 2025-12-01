@@ -15,28 +15,32 @@ public class ApiController {
     public ResponseEntity<List<String>> getMessages() {
         return ResponseEntity.ok(messages);
     }
+    //curl http://localhost:8080/messages
 
     @PostMapping("messages")
     public ResponseEntity<Void> addMessage(@RequestBody String text) {
         messages.add(text);
         return ResponseEntity.accepted().build();
     }
+    //curl -d "String" http://localhost:8080/messages
 
     @GetMapping("messages/{index}")
     public ResponseEntity<String> getMessage(@PathVariable("index") Integer index) {
         return ResponseEntity.ok(messages.get(index));
     }
+    //curl http://localhost:8080/messages/0
 
     @DeleteMapping("messages/{index}")
     public ResponseEntity<Void> deleteText(@PathVariable("index") Integer index) {
         messages.remove((int) index);
         return ResponseEntity.noContent().build();
     }
-
+    //curl -X DELETE http://localhost:8080/messages/0
     @PutMapping("messages/{index}")
     public ResponseEntity<Void> updateMessage(@PathVariable("index") Integer i, @RequestBody String message) {
         messages.remove((int) i);
         messages.add(i, message);
         return ResponseEntity.accepted().build();
     }
+
 }
