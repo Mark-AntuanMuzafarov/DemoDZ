@@ -43,4 +43,52 @@ public class ApiController {
         return ResponseEntity.accepted().build();
     }
 
+    @GetMapping("/messages/search/{text}")
+    public ResponseEntity<Integer> searchingtext(@PathVariable("text") String text){
+        for (int i = 0; i < messages.size(); i++) {
+            if(messages.get(i).contains(text)){
+                return ResponseEntity.ok(i);
+            }
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    //curl http://localhost:8080/messages/search/what
+    @GetMapping("/messages/count")
+    public ResponseEntity<Integer> Messagecount() {
+        return ResponseEntity.ok(messages.size());
+    }
+    //curl http://localhost:8080/messages/count
+
+    @PostMapping("/messages/{index}/create")
+    public ResponseEntity<Void> CreateMessage(@PathVariable Integer index) {
+        messages.add(index,"");
+        return ResponseEntity.accepted().build();
+    }
+
+    @DeleteMapping("/messages/search/{text}")
+    public ResponseEntity<Void> deletesearchingText(@PathVariable("text") String text) {
+        for (int i = 0; i < messages.size(); i++) {
+            if(messages.get(i).contains(text)){
+                deleteText(i);
+            }
+        }
+        return ResponseEntity.noContent().build();
+    }
+    //curl -X DELETE http://localhost:8080//messages/search/{text}
+
+    @GetMapping("messages/{text}")
+    public ResponseEntity<List<String>> getSearchingMessages(@PathVariable("text") String text) {
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < messages.size(); i++) {
+            if(messages.get(i).contains(text)){
+                result.add(messages.get(i));
+            }
+        }
+        return ResponseEntity.ok(result);
+    }
+    //curl http://localhost:8080//messages/{text}
+
+
+
 }
