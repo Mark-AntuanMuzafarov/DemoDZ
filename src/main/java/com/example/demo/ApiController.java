@@ -22,7 +22,7 @@ public class ApiController {
         messages.add(text);
         return ResponseEntity.accepted().build();
     }
-    //curl -d "String" http://localhost:8080/messages
+    //curl http://localhost:8080/messages -X POST -d "String"
 
     @GetMapping("messages/{index}")
     public ResponseEntity<String> getMessage(@PathVariable("index") Integer index) {
@@ -35,13 +35,14 @@ public class ApiController {
         messages.remove((int) index);
         return ResponseEntity.noContent().build();
     }
-    //curl -X DELETE http://localhost:8080/messages/0
+    //curl http://localhost:8080/messages/0 -X DELETE
     @PutMapping("messages/{index}")
     public ResponseEntity<Void> updateMessage(@PathVariable("index") Integer i, @RequestBody String message) {
         messages.remove((int) i);
         messages.add(i, message);
         return ResponseEntity.accepted().build();
     }
+    //curl http://localhost:8080/messages/0 -X PUT -d "String"
 
     @GetMapping("/messages/search/{text}")
     public ResponseEntity<Integer> searchingtext(@PathVariable("text") String text){
@@ -65,6 +66,7 @@ public class ApiController {
         messages.add(index,"");
         return ResponseEntity.accepted().build();
     }
+    //curl http://localhost:8080/messages/0/create -X POST
 
     @DeleteMapping("/messages/search/{text}")
     public ResponseEntity<Void> deletesearchingText(@PathVariable("text") String text) {
@@ -75,7 +77,7 @@ public class ApiController {
         }
         return ResponseEntity.noContent().build();
     }
-    //curl -X DELETE http://localhost:8080//messages/search/{text}
+    //curl http://localhost:8080//messages/search/{text} -X DELETE
 
     @GetMapping("messages/{text}")
     public ResponseEntity<List<String>> getSearchingMessages(@PathVariable("text") String text) {
