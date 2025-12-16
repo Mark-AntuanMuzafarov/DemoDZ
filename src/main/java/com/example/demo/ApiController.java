@@ -1,4 +1,5 @@
 package com.example.demo;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -9,87 +10,54 @@ import java.util.List;
 @Controller
 @RestController
 public class ApiController {
-    private final List<String> messages = new ArrayList<>();
+    private final List<User> users = new ArrayList<>();
 
-    @GetMapping("messages")
-    public ResponseEntity<List<String>> getMessages() {
-        return ResponseEntity.ok(messages);
-    }
-    //curl http://localhost:8080/messages
 
-    @PostMapping("messages")
-    public ResponseEntity<Void> addMessage(@RequestBody String text) {
-        messages.add(text);
-        return ResponseEntity.accepted().build();
-    }
-    //curl http://localhost:8080/messages -X POST -d "String"
-
-    @GetMapping("messages/{index}")
-    public ResponseEntity<String> getMessage(@PathVariable("index") Integer index) {
-        return ResponseEntity.ok(messages.get(index));
-    }
-    //curl http://localhost:8080/messages/0
-
-    @DeleteMapping("messages/{index}")
-    public ResponseEntity<Void> deleteText(@PathVariable("index") Integer index) {
-        messages.remove((int) index);
-        return ResponseEntity.noContent().build();
-    }
-    //curl http://localhost:8080/messages/0 -X DELETE
-    @PutMapping("messages/{index}")
-    public ResponseEntity<Void> updateMessage(@PathVariable("index") Integer i, @RequestBody String message) {
-        messages.remove((int) i);
-        messages.add(i, message);
-        return ResponseEntity.accepted().build();
-    }
-    //curl http://localhost:8080/messages/0 -X PUT -d "String"
-
-    @GetMapping("/messages/search/{text}")
-    public ResponseEntity<Integer> searchingtext(@PathVariable("text") String text){
-        for (int i = 0; i < messages.size(); i++) {
-            if(messages.get(i).contains(text)){
-                return ResponseEntity.ok(i);
+    //curl http://localhost:8080/
+    @PostMapping("registration/{username}/{age}")
+    public ResponseEntity<Void> createUser(@PathVariable("username") String username, @PathVariable("age") Integer age, @RequestBody String password){
+        for (User user: users) {
+            if(user.getUsername().equals(username)){
+                return ResponseEntity.status(HttpStatusCode.valueOf(409)).build();
             }
         }
-        return ResponseEntity.noContent().build();
+        User user = new User(username, password, age);
+        users.add(user);
+        return ResponseEntity.ok().build();
     }
-
-    //curl http://localhost:8080/messages/search/what
-    @GetMapping("/messages/count")
-    public ResponseEntity<Integer> Messagecount() {
-        return ResponseEntity.ok(messages.size());
+    @GetMapping("users")
+    public ResponseEntity<List<User>> seekAll(){
+        return ResponseEntity.ok(users);
     }
-    //curl http://localhost:8080/messages/count
-
-    @PostMapping("/messages/{index}/create")
-    public ResponseEntity<Void> CreateMessage(@PathVariable Integer index) {
-        messages.add(index,"");
-        return ResponseEntity.accepted().build();
-    }
-    //curl http://localhost:8080/messages/0/create -X POST
-
-    @DeleteMapping("/messages/search/{text}")
-    public ResponseEntity<Void> deletesearchingText(@PathVariable("text") String text) {
-        for (int i = 0; i < messages.size(); i++) {
-            if(messages.get(i).contains(text)){
-                deleteText(i);
-            }
+    @GetMapping("user/{id}")
+    public ResponseEntity<User> seekUser(@PathVariable("id") Integer id){
+        if(id < 1 || id > users.size()){
+            return ResponseEntity.status(HttpStatusCode.valueOf(404)).build();
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(users.get(id-1));
     }
-    //curl http://localhost:8080//messages/search/{text} -X DELETE
-
-    @GetMapping("messages/{text}")
-    public ResponseEntity<List<String>> getSearchingMessages(@PathVariable("text") String text) {
-        List<String> result = new ArrayList<>();
-        for (int i = 0; i < messages.size(); i++) {
-            if(messages.get(i).contains(text)){
-                result.add(messages.get(i));
-            }
+    @DeleteMapping("user/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") int id){
+        if(id < 1 || id > users.size()){
+            return ResponseEntity.status(HttpStatusCode.valueOf(404)).build();
         }
-        return ResponseEntity.ok(result);
+        users.remove(id);
+        return ResponseEntity.ok().build();
     }
-    //curl http://localhost:8080//messages/{text}
+    @PostMapping("rename/{username}/{id}")
+    public ResponseEntity<Void> renameUser(@PathVariable("username") String username, @PathVariable("id") int id,  @RequestBody String repeatPassword){
+        if(id < 1 || id > users.size()){
+            return ResponseEntity.status(HttpStatusCode.valueOf(404)).build();
+        }
+        if(!users.get(id).getPassword().equals(repeatPassword)){
+            return ResponseEntity.status(HttpStatusCode.valueOf(400)).build();
+        }
+        users.get(id).setUsername(username);
+        return ResponseEntity.ok().build();
+    }
+
+
+
 
 
 

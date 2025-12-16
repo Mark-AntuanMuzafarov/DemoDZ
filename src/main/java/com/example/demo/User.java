@@ -1,24 +1,27 @@
 package com.example.demo;
 
 public class User {
-    String name;
+    String username;
+    String password;
     int age;
 
-    public User(String name, int age) {
-        this.name = name;
+
+    public User(String username, String password, int age) {
+        this.username = username;
+        this.password = password;
         this.age = age;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
     public int getAge() {
         return age;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setAge(int age) {
@@ -28,9 +31,12 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
+                "username='" + username + '\'' +
                 ", age=" + age +
                 '}';
     }
 
+    public String getPassword() {
+        return password;
+    }
 }
